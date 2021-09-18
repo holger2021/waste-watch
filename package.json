@@ -1,0 +1,39 @@
+{
+  "name": "waste-watch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "routes/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js --exec babel-node",
+    "build": "babel -d dist"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "colors": "^1.4.0",
+    "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "ejs": "^3.1.6",
+    "express": "^4.17.1",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.2",
+    "mssql": "^7.2.1",
+    "node-datetime": "^2.1.2",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "serialport": "^9.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.15.4",
+    "@babel/core": "^7.15.5",
+    "@babel/node": "^7.15.4",
+    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/preset-env": "^7.15.4",
+    "nodemon": "^2.0.12"
+  }
+}

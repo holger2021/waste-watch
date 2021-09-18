@@ -1,0 +1,31 @@
+<div class="col-12">
+    <div class="card">
+        <div class="card-body">
+            <h3>Bascula con indicador # <span class="badge badge-info"><%= user.id %></span></h3>
+        </div>
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Area</th>
+                    <th scope="col">Site</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Peso</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(let i = 0; i < registros.length; i++) { let index = i + 1 ;%>
+                    <tr>
+                        <th scope="col"><%= index %></th>
+                        <td><%= registros[i].fecha_registro.getUTCDate() %>/<%= registros[i].fecha_registro.getUTCMonth() %>/<%= registros[i].fecha_registro.getUTCFullYear() %></td>
+                        <td><%= registros[i].nombre_area %></td>
+                        <td><%= registros[i].nombre_site %></td>
+                        <td><%= registros[i].nombre_producto %></td>
+                        <td><%= registros[i].peso %> Kg</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>

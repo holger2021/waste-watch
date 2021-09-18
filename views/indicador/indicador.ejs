@@ -1,0 +1,311 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border-primary">
+            <div class="card-header bg-primary">
+                <h4 class="mb-0 text-white">Registro de informaci&oacute;n en b&aacute;scula</h4>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">A tener en cuenta...</h3>
+                <p class="card-text text-primary bold">Verificar la informaci&oacute;n antes de guardar en el sistema.</p>
+
+                <div class="card border-bottom">
+                    <div class="card-body">
+                        <form class="mt-3" action="/dashboard" type="POST">
+                            <input type="hidden" id="indicador" name="indicador" value="<%= user.id %>">
+                            <div class="form-group mb-4">
+                                <label class="mr-sm-2" for="sites">*Site</label>
+                                <select class="custom-select mr-sm-2" id="sites" name="sites">
+                                    <% allSites.forEach((site) => { %>
+                                        <option value="<%= site.idSite %>"><%= site.site %></option>
+                                    <% }) %>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Debe seleccionar un site...
+                                </div>
+                            </div>
+                            <div class="form-group mb-4">
+                                <label class="mr-sm-2" for="areas">*&Aacute;rea</label>
+                                <select class="custom-select mr-sm-2" id="areas" name="areas">
+                                    <% allAreas.forEach((area) => { %>
+                                        <option value="<%= area.idArea %>"><%= area.area %></option>
+                                    <% }) %>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Debe seleccionar un area...
+                                </div>
+                            </div>
+                            <div class="form-group mb-4" hidden>
+                                <label class="mr-sm-2" for="productos">*Producto</label>
+                                <select class="custom-select mr-sm-2" id="productos" name="productos">
+                                    <option value="0">Seleccionar...</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Debe seleccionar producto...
+                                </div>
+                            </div>
+                            <div class="form-group mb-4" hidden>
+                                <label class="mr-sm-2" for="tipo">*Tipo</label>
+                                <select class="custom-select mr-sm-2" id="tipo" name="tipo">
+                                    <option value="0" selected="">Seleccionar...</option>
+                                    <option value="1">Organicos</option>
+                                    <option value="2">Inorganicos</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Debe seleccionar tipo...
+                                </div>
+                            </div>
+                            <div class="form-group mb-4" hidden>
+                                <label class="mr-sm-2" for="sector">*Sector</label>
+                                <select class="custom-select mr-sm-2" id="sector" name="sector">
+                                    <option value="0" selected="">Seleccionar...</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Debe seleccionar sector...
+                                </div>
+                            </div>
+                            <div class="form-group mb-4" hidden>
+                                <label class="mr-sm-2" for="menu">*Menu</label>
+                                <select class="custom-select mr-sm-2" id="menu" name="menu">
+                                    <option value="0" selected="">Seleccionar...</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Debe seleccionar menu...
+                                </div>
+                            </div>
+
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="peso" placeholder="Peso en el indicador" readonly="">
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-danger" id="buttonPeso" type="button">Pesar</button>
+                                </div>
+                                <div class="invalid-feedback">
+                                    Debe pesar el producto...
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="form-group mb-4">
+                                <button type="submit" class="btn waves-effect waves-light btn-primary" id="buttonGuardar">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // referencias al boton y text
+    const buttonPeso = document.querySelector('#buttonPeso');
+    const buttonGuardar = document.querySelector('#buttonGuardar');
+    const txtPeso = document.querySelector('#peso');
+    const txtId = document.querySelector('#indicador');
+    const selectSite = document.querySelector('#sites');
+    const selectAreas = document.querySelector('#areas');
+    const selectProductos = document.querySelector('#productos');
+    const selectTipo = document.querySelector('#tipo');
+    const selectSector = document.querySelector('#sector');
+    const selectMenu = document.querySelector('#menu');
+
+    const optionsTipo = [
+        { value: 0, option: "Seleccionar" },
+        { value: 1, option: "Organico" },
+        { value: 2, option: "Inorganico" },
+    ]
+
+    // eventos del boton
+    buttonPeso.addEventListener('click', async () => {
+        buttonPeso.disabled = true; // deshabilito el boton
+        txtPeso.classList.remove('is-invalid');
+
+        const promesa = await fetch('/peso', { method: "GET" }); // peticion para obtener el peso del indicador
+        const respuesta = await promesa.json(); // data en formato json, ejemplo: { "peso": "10.00" }
+
+        // verifico si la respuesta tiene un valor en el campo 'peso'
+        if(respuesta.peso) {
+            const valorPesado = Number (respuesta.peso); // convierto el peso a numero
+            txtPeso.value = valorPesado + ' Kg';
+            buttonPeso.disabled = false; // habilito el boton
+        }
+    });
+
+    buttonGuardar.addEventListener('click', (event) => {
+        event.preventDefault();
+        // validar campos
+        if(selectSite.value == 0) {
+            selectSite.classList.add('is-invalid');
+        }
+
+        if(selectAreas.value == 0) {
+            selectAreas.classList.add('is-invalid');
+        }
+        if(selectProductos.value == 0) {
+            selectProductos.classList.add('is-invalid');
+        }
+
+        if (selectTipo.value == 0) {
+            selectTipo.classList.add('is-invalid');
+        }
+
+        if (selectSector.value == 0) {
+            selectSector.classList.add('is-invalid');
+        }
+
+        if (selectMenu.value == 0) {
+            selectMenu.classList.add('is-invalid');
+        }
+
+        if (txtPeso.value == '') {
+            txtPeso.classList.add('is-invalid');
+        }
+        if (selectSite.value != 0 && selectAreas.value != 0 && selectProductos.value != 0 && txtPeso.value != '') {
+            // guardar
+            Swal.fire({
+                title: 'Desea guardar la informaci&oacute;n?',
+                showDenyButton: true,
+                confirmButtonText: `Guardar`,
+                denyButtonText: `No guardar`,
+            }).then(async (result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    const objeto = {
+                        'area': selectAreas.value,
+                        'producto': selectProductos.value,
+                        'site': selectSite.value,
+                        'peso': txtPeso.value,
+                        'indicador': txtId.value,
+                        'tipo': selectTipo.value,
+                        'menu': selectMenu.value,
+                        'sector': selectSector.value
+                    }
+                    fetch('/indicador', {
+                        method: 'POST',
+                        body: JSON.stringify(objeto),
+                        headers: {
+                            "Content-Type": "application/json; charset=UTF-8"
+                        }
+                    });
+                    Swal.fire('Guardado!', '', 'success');
+                    this.limpiarCampos ();
+                    this.deshabilitarAtributo();
+                } else if (result.isDenied) {
+                    Swal.fire('Cambios no guardados', '', 'info');}
+            })
+        }
+    });
+
+    selectAreas.addEventListener('change', async (event) => {
+        //obtengo el area seleccionada
+        const id_area = event.target.value;
+        if (id_area == 0) {
+            selectAreas.classList.add('is-invalid');
+            // limpiamos los option del select productos
+            this.removeAll(selectProductos);
+            selectProductos.parentElement.setAttribute('hidden', '');
+        }
+        else {
+            selectAreas.classList.remove('is-invalid');
+            // oculto los select diferentes a linea de servicio y descominado
+            selectTipo.parentElement.setAttribute('hidden', '');
+            selectSector.parentElement.setAttribute('hidden', '');
+            selectMenu.parentElement.setAttribute('hidden', '');
+
+            //peticion para obtener los productos segun el area seleccionada
+            const promesa = await fetch('/productos-area', {
+                method: "POST",
+                body: JSON.stringify({
+                    idArea: id_area
+                }),
+                headers: {
+                    "Content-Type": "application/json; charset=UTF-8"
+                }
+            });
+            // limpiamos los option del select productos
+            this.removeAll(selectProductos);
+            selectProductos.parentElement.removeAttribute('hidden');
+
+            const respuesta = await promesa.json();
+            respuesta.forEach((option) => {
+                const newOption = document.createElement('option');
+                const optionText = document.createTextNode(option.producto);
+                newOption.setAttribute('value', option.idProducto);
+                newOption.appendChild(optionText);
+                selectProductos.appendChild(newOption);
+            });
+
+            if (id_area == 3) {
+                selectSector.parentElement.removeAttribute('hidden');
+                selectMenu.parentElement.removeAttribute('hidden');
+            }
+            if (id_area == 4) {
+                selectTipo.parentElement.removeAttribute('hidden');
+            }
+
+        }
+    });
+
+    selectSite.addEventListener('change', (event) => {
+        if (event.target.value != 0) {
+            selectSite.classList.remove('is-invalid');
+        }
+        else {
+            selectSite.classList.add('is-invalid');
+        }
+    });
+
+    selectTipo.addEventListener('change', (event) => {
+        if (event.target.value != 0) {
+            selectSite.classList.remove('is-invalid');
+        }
+        else {
+            selectSite.classList.add('is-invalid');
+        }
+    });
+
+    selectMenu.addEventListener('change', (event) => {
+        if (event.target.value != 0) {
+            selectSite.classList.remove('is-invalid');
+        }
+        else {
+            selectSite.classList.add('is-invalid');
+        }
+    });
+
+    selectSector.addEventListener('change', (event) => {
+        if (event.target.value != 0) {
+            selectSite.classList.remove('is-invalid');
+        }
+        else {
+            selectSite.classList.add('is-invalid');
+        }
+    });
+
+    function limpiarCampos () {
+        selectSite.options.selectedIndex = 0;
+        selectAreas.options.selectedIndex = 0;
+        selectProductos.options.selectedIndex = 0;
+        txtPeso.value = '';
+    }
+
+    function removeAll(selectBox) {
+        while (selectBox.options.length > 0) {
+            selectBox.remove(0);
+        }
+    }
+
+    function deshabilitarAtributo() {
+        selectProductos.parentElement.setAttribute('hidden', '');
+        selectSector.parentElement.setAttribute('hidden', '');
+        selectMenu.parentElement.setAttribute('hidden', '');
+        selectTipo.parentElement.setAttribute('hidden', '');
+    }
+
+    function habilitarAtributo() {
+        selectSector.parentElement.removeAttribute('hidden');
+        selectMenu.parentElement.removeAttribute('hidden');
+        selectTipo.parentElement.removeAttribute('hidden');
+    }
+
+
+</script>
